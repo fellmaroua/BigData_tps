@@ -1,0 +1,39 @@
+Rapport sur Analyse du lecture et traitement des Big Data "Flight Prices" avec Pandas, Dask et gzip 
+Etudiant M2_AI&DS: Fellah Maroua
+Objectif du travail:
+--------------------
+L’objectif de ce travail est de comparer trois méthodes pour traiter un fichier de données volumineux ( 29 GB, et 5GB Compressée)  contenant les prix des vols, en évaluant le temps d’exécution et la mémoire utilisée, ainsi qu’une méthode de compression pour réduire la taille du fichier.
+
+Étapes principales:
+------------------
+Pandas : lecture et traitement du fichier par lots en utilisant le paramètre chunk_size de Pandas, pour calculer la moyenne des prix totaux, et en mesurant le temps d’exécution et la mémoire utilisée pendant le traitement.
+
+Dask : traitement parallèle permettant d’accélérer le calcul sur de grandes quantités de données.
+
+gzip : compression du fichier pour diminuer son espace de stockage sans perte d’information.
+
+Utilisation la plus adaptée de chaque méthode:
+---------------------------------------------
+
+Pandas : convient pour les jeux de données volumineux sur des machines à mémoire limitée.
+
+Dask : recommandée pour des environnements disposant de ressources importantes ou de calcul distribué.
+
+gzip : idéale pour la réduction de la taille des fichiers avant leur stockage ou transfert.
+
+Résultats et comparaison
+------------------------
+Méthode   	       | Temps d’exécution (s)  | 	Mémoire utilisée (MB)	   |      Remarques
+Pandas	           |   897.37	              |       76.11	               |  Légèrement plus lente mais économe en mémoire
+Dask	             |   852.81	              |       386.39               |  Plus rapide mais consomme davantage de mémoire
+Compression (gzip) |   2231.48              |       	≈0	               |  Réduction de la taille d’environ 81.9 %
+
+Conclusion:
+----------
+Pandas offre un bon équilibre entre performance et utilisation mémoire.
+
+Dask est plus rapide mais exige davantage de ressources.
+
+gzip permet une forte réduction de la taille du fichier, malgré un temps de traitement plus long.
+
+La meilleure approche consiste à traiter les données avec Pandas ou Dask, puis à les compresser avec gzip pour le stockage ou l’archivage.

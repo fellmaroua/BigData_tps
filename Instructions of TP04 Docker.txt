@@ -1,0 +1,17 @@
+Instructions of TP04 Docker
+docker build -t fellahmaroua/tp3:latest .
+docker run -d -p 8889:8888 --name tp3_container1 fellahmaroua/tp3:latest
+docker run -d -p 8890:8888 --name tp3_container2 fellahmaroua/tp3:latest
+docker run -d -p 8891:8888 --name tp3_container3 fellahmaroua/tp3:latest
+docker ps
+docker network create tp3_network
+docker network connect tp3_network tp3_container1
+docker network connect tp3_network tp3_container2
+docker network connect tp3_network tp3_container3
+docker network inspect tp3_network
+docker logs tp3_container1
+docker exec -it tp3_container1 apt update
+docker exec -it tp3_container1 apt install -y iputils-ping
+docker exec tp3_container1 ping -c 4 tp3_container2
+docker login
+docker push fellahmaroua/tp3:latest

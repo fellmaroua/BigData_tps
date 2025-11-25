@@ -1,0 +1,70 @@
+instractions of TP mongoDb
+installing mongodb and mongosh//
+mongod.exe
+mongosh.exe
+use info
+
+// Document 1
+db.produits.insertOne({
+  nom: "Macbook Pro",
+  fabriquant: "Apple",
+  prix: 11435.99,
+  options: ["Intel Core i5", "Retina Display", "Long life battery"]
+})
+
+// Document 2
+db.produits.insertOne({
+  nom: "Macbook Air",
+  fabriquant: "Apple",
+  prix: 125794.73,
+  ultrabook: true,
+  options: ["Intel Core i7", "SSD", "Long life battery"]
+})
+
+// Document 3
+db.produits.insertOne({
+  nom: "Thinkpad X230",
+  fabriquant: "Lenovo",
+  prix: 114358.74,
+  ultrabook: true,
+  options: ["Intel Core i5", "SSD", "Long life battery"]
+})
+
+
+
+// كل المنتجات
+print("Tous les produits:")
+db.produits.find().forEach(printjson)
+
+// أول منتج فقط
+print("Premier produit:")
+printjson(db.produits.findOne())
+
+// إيجاد الـ _id للـ Thinkpad واسترجاعه
+var thinkpad = db.produits.findOne({ nom: "Thinkpad X230" })
+print("Thinkpad par ID:")
+printjson(db.produits.findOne({ _id: thinkpad._id }))
+
+// المنتجات بسعر أكبر من 13723
+print("Produits prix > 13723:")
+db.produits.find({ prix: { $gt: 13723 } }).forEach(printjson)
+
+// أول منتج ultrabook
+print("Premier produit ultrabook:")
+printjson(db.produits.findOne({ ultrabook: true }))
+
+// أول منتج يحتوي اسمه على Macbook
+print("Premier produit contenant 'Macbook':")
+printjson(db.produits.findOne({ nom: /Macbook/ }))
+
+// المنتجات التي يبدأ اسمها بـ Macbook
+print("Produits dont le nom commence par 'Macbook':")
+db.produits.find({ nom: /^Macbook/ }).forEach(printjson)
+
+
+// حذف كل منتجات Apple
+db.produits.deleteMany({ fabriquant: "Apple" })
+
+// حذف Thinkpad X230 باستخدام _id فقط
+var x230 = db.produits.findOne({ nom: "Thinkpad X230" })
+db.produits.deleteOne({ _id: x230._id })

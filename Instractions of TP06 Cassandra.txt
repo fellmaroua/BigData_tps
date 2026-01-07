@@ -1,0 +1,76 @@
+Instractions of TP06 Cassandra
+docker run --name mon-cassandra -d -p 9042:9042 cassandra:latest
+ docker exec -it mon-cassandra cqlsh
+
+CREATE KEYSPACE IF NOT EXISTS resto_NY
+WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor': 1 };
+
+USE resto_NY;
+
+CREATE TABLE Restaurant (
+    id INT,
+    Name VARCHAR,
+    borough VARCHAR,
+    BuildingNum VARCHAR,
+    Street VARCHAR,
+    ZipCode INT,
+    Phone TEXT,
+    CuisineType VARCHAR,
+    PRIMARY KEY (id)
+);
+
+CREATE INDEX fk_Restaurant_cuisine ON Restaurant (CuisineType);
+
+
+CREATE TABLE Inspection (
+    idRestaurant INT,
+    InspectionDate DATE,
+    ViolationCode VARCHAR,
+    ViolationDescription VARCHAR,
+    CriticalFlag VARCHAR,
+    Score INT,
+    Grade VARCHAR,
+    PRIMARY KEY (idRestaurant, InspectionDate)
+);
+
+CREATE INDEX fk_Inspection_Restaurant ON Inspection (Grade);
+
+
+DESC Restaurant;
+DESC Inspection;
+
+docker cp restaurants.csv mon-cassandra:/
+docker cp restaurants_inspections.csv mon-cassandra:/
+
+USE resto_NY;
+
+COPY Restaurant (id, name, borough, buildingnum, street, zipcode, phone, cuisinetype)
+FROM '/restaurants.csv' WITH DELIMITER=',';
+
+COPY Inspection (idrestaurant, inspectiondate, violationcode, violationdescription, criticalflag, score, grade)
+FROM '/restaurants_inspections.csv' WITH DELIMITER=',';
+
+SELECT count(*) FROM Restaurant; 
+SELECT count(*) FROM Inspection;  
+
+  //1. Liste de tous les restaurants
+SELECT * FROM Restaurant;
+
+//2. Liste des noms de restaurants
+SELECT name FROM Restaurant;
+//3. Nom et quartier (borough) du restaurant dont l’id est 41569764
+SELECT name, borough FROM Restaurant WHERE id = 41569764;
+//4. Dates et grades des inspections de ce restaurant
+SELECT inspectiondate, grade FROM Inspection WHERE idRestaurant = 41569764;
+//5. Noms des restaurants de cuisine Française (French)
+SELECT name FROM Restaurant WHERE cuisinetype='French' ALLOW FILTERING;
+//6. Noms des restaurants situés dans BROOKLYN 
+SELECT name FROM Restaurant WHERE borough='BROOKLYN' ALLOW FILTERING;
+//7. Grades et scores donnés pour une inspection pour le restaurant n° 
+41569764 avec un score d’au moins 10
+SELECT grade, score FROM Inspection 
+WHERE idRestaurant=41569764 AND score >= 10 ALLOW FILTERING;
+//8. Grades (non nuls) des inspections dont le score est supérieur à 30
+SELECT grade FROM Inspection WHERE score > 30 ALLOW FILTERING;
+//9. Nombre de lignes retournées par la requête précédente
+SELECT count(*) FROM Inspection WHERE score > 30 ALLOW FILTERING;
